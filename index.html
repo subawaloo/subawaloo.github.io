@@ -722,6 +722,15 @@ function filterCategory(category) {
 
 function openGame(gameName) {
 
+    if (gameName === "Dodge") {
+
+        window.location.href =
+            "games/dodge/";
+
+        return;
+
+    }
+
     document
         .getElementById("homePage")
         .style.display = "none";

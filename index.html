@@ -1,196 +1,783 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Epic Arcade</title>
+<meta charset="UTF-8">
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #111827;
-            color: white;
-        }
+<title>Epic Arcade</title>
 
-        header {
-            background: #1f2937;
-            padding: 25px;
-            text-align: center;
-            border-bottom: 2px solid #374151;
-        }
+<style>
 
-        header h1 {
-            margin: 0;
-            font-size: 35px;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        header p {
-            color: #9ca3af;
-        }
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #0b0f19;
+    color: white;
+}
 
-        .search {
-            width: 90%;
-            max-width: 600px;
-            padding: 14px;
-            margin-top: 15px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-        }
+/* =========================
+   HEADER
+========================= */
 
-        .games {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 30px;
-            max-width: 1200px;
-            margin: auto;
-        }
+header {
+    background: linear-gradient(135deg, #111827, #171d31);
+    padding: 30px 20px;
+    text-align: center;
+    border-bottom: 1px solid #293248;
+}
 
-        .game {
-            background: #1f2937;
-            border-radius: 15px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid #374151;
-        }
+.logo {
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
 
-        .game:hover {
-            transform: translateY(-5px);
-            border-color: #6366f1;
-        }
+.subtitle {
+    color: #9ca3af;
+    margin-bottom: 25px;
+}
 
-        .game-image {
-            height: 130px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-            background: #374151;
-        }
+/* =========================
+   SEARCH
+========================= */
 
-        .game-info {
-            padding: 15px;
-        }
+.search-box {
+    width: 100%;
+    max-width: 650px;
+    margin: auto;
+}
 
-        .game-info h2 {
-            margin: 0 0 5px;
-            font-size: 20px;
-        }
+.search-box input {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 1px solid #374151;
+    background: #0b0f19;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
 
-        .game-info p {
-            margin: 0;
-            color: #9ca3af;
-        }
-    </style>
+.search-box input:focus {
+    border-color: #6366f1;
+}
+
+/* =========================
+   CATEGORY BAR
+========================= */
+
+.categories {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 20px;
+}
+
+.category {
+    padding: 10px 17px;
+    border-radius: 20px;
+    background: #1b2335;
+    border: 1px solid #303a52;
+    cursor: pointer;
+    color: #d1d5db;
+}
+
+.category:hover {
+    background: #6366f1;
+    color: white;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+main {
+    max-width: 1300px;
+    margin: auto;
+    padding: 20px;
+}
+
+.section-title {
+    font-size: 25px;
+    margin: 25px 0 15px;
+}
+
+/* =========================
+   GAME GRID
+========================= */
+
+.games {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill, minmax(210px, 1fr));
+
+    gap: 20px;
+}
+
+/* =========================
+   GAME CARD
+========================= */
+
+.game {
+    background: #151c2c;
+    border: 1px solid #273149;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+
+    transition:
+        transform 0.2s,
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.game:hover {
+    transform: translateY(-5px);
+    border-color: #6366f1;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.35);
+}
+
+.game-image {
+    height: 145px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 65px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #202943,
+            #111827
+        );
+}
+
+.game-info {
+    padding: 15px;
+}
+
+.game-name {
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.game-category {
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+/* =========================
+   PLAY PAGE
+========================= */
+
+#gamePage {
+    display: none;
+
+    min-height: 100vh;
+    background: #080b12;
+}
+
+.game-header {
+    height: 65px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 0 15px;
+
+    background: #111827;
+
+    border-bottom: 1px solid #293248;
+}
+
+.back-button,
+.fullscreen-button {
+    border: none;
+
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    background: #252e43;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+.back-button:hover,
+.fullscreen-button:hover {
+    background: #6366f1;
+}
+
+.game-title {
+    font-weight: bold;
+    flex: 1;
+}
+
+.game-container {
+    width: 100%;
+    height: calc(100vh - 65px);
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+}
+
+.game-placeholder {
+    width: 100%;
+    max-width: 1100px;
+    height: 100%;
+
+    border-radius: 12px;
+
+    background: #111827;
+
+    border: 1px solid #293248;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 30px;
+}
+
+.placeholder-content {
+    max-width: 500px;
+}
+
+.placeholder-content h1 {
+    font-size: 35px;
+}
+
+.placeholder-content p {
+    color: #9ca3af;
+    line-height: 1.6;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    text-align: center;
+
+    padding: 35px 20px;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .logo {
+        font-size: 30px;
+    }
+
+    .games {
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 12px;
+    }
+
+    .game-image {
+        height: 110px;
+        font-size: 50px;
+    }
+
+    .game-info {
+        padding: 11px;
+    }
+
+    .game-name {
+        font-size: 16px;
+    }
+
+}
+
+</style>
+
 </head>
 
 <body>
 
-<header>
-    <h1>🎮 Epic Arcade</h1>
-    <p>Play browser games!</p>
 
-    <input
-        class="search"
-        type="text"
-        id="search"
-        placeholder="Search games..."
-        onkeyup="searchGames()"
-    >
+<!-- =========================
+     HOME PAGE
+========================= -->
+
+<div id="homePage">
+
+<header>
+
+    <div class="logo">
+        🎮 Epic Arcade
+    </div>
+
+    <div class="subtitle">
+        Your browser game collection
+    </div>
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search games..."
+            onkeyup="searchGames()"
+        >
+
+    </div>
+
 </header>
 
-<div class="games" id="games">
 
-    <div class="game" onclick="openGame('Basketball')">
-        <div class="game-image">🏀</div>
-        <div class="game-info">
-            <h2>Basketball</h2>
-            <p>Sports</p>
-        </div>
+<div class="categories">
+
+    <div class="category"
+         onclick="filterCategory('All')">
+        All
     </div>
 
-    <div class="game" onclick="openGame('Racing')">
-        <div class="game-image">🏎️</div>
-        <div class="game-info">
-            <h2>Racing</h2>
-            <p>Racing</p>
-        </div>
+    <div class="category"
+         onclick="filterCategory('Action')">
+        🔥 Action
     </div>
 
-    <div class="game" onclick="openGame('Puzzle')">
-        <div class="game-image">🧩</div>
-        <div class="game-info">
-            <h2>Puzzle</h2>
-            <p>Puzzle</p>
-        </div>
+    <div class="category"
+         onclick="filterCategory('Racing')">
+        🏎️ Racing
     </div>
 
-    <div class="game" onclick="openGame('Zombie')">
-        <div class="game-image">🧟</div>
-        <div class="game-info">
-            <h2>Zombie</h2>
-            <p>Action</p>
-        </div>
+    <div class="category"
+         onclick="filterCategory('Puzzle')">
+        🧩 Puzzle
     </div>
 
-    <div class="game" onclick="openGame('Runner')">
-        <div class="game-image">🏃</div>
-        <div class="game-info">
-            <h2>Runner</h2>
-            <p>Arcade</p>
-        </div>
+    <div class="category"
+         onclick="filterCategory('Sports')">
+        🏀 Sports
     </div>
 
-    <div class="game" onclick="openGame('Adventure')">
-        <div class="game-image">🏰</div>
-        <div class="game-info">
-            <h2>Adventure</h2>
-            <p>Adventure</p>
-        </div>
+    <div class="category"
+         onclick="filterCategory('Adventure')">
+        🗺️ Adventure
     </div>
 
 </div>
 
+
+<main>
+
+<h2 class="section-title">
+    ⭐ Featured Games
+</h2>
+
+<div class="games" id="gameGrid">
+
+
+    <!-- GAME 1 -->
+
+    <div class="game"
+         data-name="Basketball"
+         data-category="Sports"
+         onclick="openGame('Basketball')">
+
+        <div class="game-image">
+            🏀
+        </div>
+
+        <div class="game-info">
+
+            <div class="game-name">
+                Basketball
+            </div>
+
+            <div class="game-category">
+                Sports
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- GAME 2 -->
+
+    <div class="game"
+         data-name="Racing"
+         data-category="Racing"
+         onclick="openGame('Racing')">
+
+        <div class="game-image">
+            🏎️
+        </div>
+
+        <div class="game-info">
+
+            <div class="game-name">
+                Racing
+            </div>
+
+            <div class="game-category">
+                Racing
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- GAME 3 -->
+
+    <div class="game"
+         data-name="Puzzle"
+         data-category="Puzzle"
+         onclick="openGame('Puzzle')">
+
+        <div class="game-image">
+            🧩
+        </div>
+
+        <div class="game-info">
+
+            <div class="game-name">
+                Puzzle
+            </div>
+
+            <div class="game-category">
+                Puzzle
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- GAME 4 -->
+
+    <div class="game"
+         data-name="Zombie"
+         data-category="Action"
+         onclick="openGame('Zombie')">
+
+        <div class="game-image">
+            🧟
+        </div>
+
+        <div class="game-info">
+
+            <div class="game-name">
+                Zombie
+            </div>
+
+            <div class="game-category">
+                Action
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- GAME 5 -->
+
+    <div class="game"
+         data-name="Runner"
+         data-category="Action"
+         onclick="openGame('Runner')">
+
+        <div class="game-image">
+            🏃
+        </div>
+
+        <div class="game-info">
+
+            <div class="game-name">
+                Runner
+            </div>
+
+            <div class="game-category">
+                Action
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- GAME 6 -->
+
+    <div class="game"
+         data-name="Adventure"
+         data-category="Adventure"
+         onclick="openGame('Adventure')">
+
+        <div class="game-image">
+            🏰
+        </div>
+
+        <div class="game-info">
+
+            <div class="game-name">
+                Adventure
+            </div>
+
+            <div class="game-category">
+                Adventure
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+</main>
+
+
+<footer>
+
+    Epic Arcade • Browser Games
+
+</footer>
+
+</div>
+
+
+
+<!-- =========================
+     GAME PAGE
+========================= -->
+
+<div id="gamePage">
+
+    <div class="game-header">
+
+        <button
+            class="back-button"
+            onclick="goHome()">
+
+            ← Back
+
+        </button>
+
+        <div
+            class="game-title"
+            id="gameTitle">
+
+            Game
+
+        </div>
+
+        <button
+            class="fullscreen-button"
+            onclick="fullscreenGame()">
+
+            ⛶ Fullscreen
+
+        </button>
+
+    </div>
+
+
+    <div class="game-container">
+
+        <div
+            class="game-placeholder"
+            id="gameArea">
+
+            <div class="placeholder-content">
+
+                <h1 id="placeholderTitle">
+                    Game
+                </h1>
+
+                <p>
+                    This is where the actual browser
+                    game will be placed.
+                </p>
+
+                <p>
+                    Once you add a game file,
+                    this area can become the game screen.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
 <script>
 
-function openGame(game) {
-    alert(game + " will go here!");
-}
+/* =========================
+   SEARCH
+========================= */
 
 function searchGames() {
 
-    let search = document
-        .getElementById("search")
+    let search =
+        document
+        .getElementById("searchInput")
         .value
         .toLowerCase();
 
-    let games = document.querySelectorAll(".game");
+    let games =
+        document
+        .querySelectorAll(".game");
 
     games.forEach(function(game) {
 
-        let name = game
-            .querySelector("h2")
-            .textContent
+        let name =
+            game
+            .getAttribute("data-name")
             .toLowerCase();
 
         if (name.includes(search)) {
-            game.style.display = "block";
+
+            game.style.display = "";
+
         } else {
+
             game.style.display = "none";
+
         }
 
     });
+
+}
+
+
+/* =========================
+   CATEGORY FILTER
+========================= */
+
+function filterCategory(category) {
+
+    let games =
+        document
+        .querySelectorAll(".game");
+
+    games.forEach(function(game) {
+
+        let gameCategory =
+            game.getAttribute("data-category");
+
+        if (
+            category === "All" ||
+            gameCategory === category
+        ) {
+
+            game.style.display = "";
+
+        } else {
+
+            game.style.display = "none";
+
+        }
+
+    });
+
+}
+
+
+/* =========================
+   OPEN GAME
+========================= */
+
+function openGame(gameName) {
+
+    document
+        .getElementById("homePage")
+        .style.display = "none";
+
+    document
+        .getElementById("gamePage")
+        .style.display = "block";
+
+    document
+        .getElementById("gameTitle")
+        .textContent = gameName;
+
+    document
+        .getElementById("placeholderTitle")
+        .textContent = gameName;
+
+}
+
+
+/* =========================
+   GO HOME
+========================= */
+
+function goHome() {
+
+    document
+        .getElementById("gamePage")
+        .style.display = "none";
+
+    document
+        .getElementById("homePage")
+        .style.display = "block";
+
+}
+
+
+/* =========================
+   FULLSCREEN
+========================= */
+
+function fullscreenGame() {
+
+    let area =
+        document
+        .getElementById("gameArea");
+
+    if (area.requestFullscreen) {
+
+        area.requestFullscreen();
+
+    }
+
 }
 
 </script>
 
 </body>
+
 </html>

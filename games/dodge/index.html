@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Dodge</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    background: #080b12;
+
+    color: white;
+
+    font-family: Arial, sans-serif;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    min-height: 100vh;
+
+    overflow: hidden;
+}
+
+h1 {
+
+    margin: 15px 0 5px;
+
+}
+
+#score {
+
+    font-size: 20px;
+
+    margin-bottom: 10px;
+
+}
+
+#game {
+
+    position: relative;
+
+    width: min(90vw, 500px);
+
+    height: min(70vh, 650px);
+
+    background: #111827;
+
+    border: 3px solid #374151;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+}
+
+#player {
+
+    position: absolute;
+
+    width: 45px;
+
+    height: 45px;
+
+    background: #6366f1;
+
+    border-radius: 8px;
+
+    bottom: 20px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+}
+
+.enemy {
+
+    position: absolute;
+
+    width: 40px;
+
+    height: 40px;
+
+    background: #ef4444;
+
+    border-radius: 7px;
+
+}
+
+#gameOver {
+
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(0,0,0,0.8);
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    text-align: center;
+
+}
+
+#gameOver h2 {
+
+    font-size: 35px;
+
+    margin-bottom: 10px;
+
+}
+
+button {
+
+    border: none;
+
+    padding: 12px 20px;
+
+    border-radius: 8px;
+
+    background: #6366f1;
+
+    color: white;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+}
+
+button:hover {
+
+    background: #818cf8;
+
+}
+
+.controls {
+
+    margin-top: 15px;
+
+    display: flex;
+
+    gap: 15px;
+
+}
+
+.control {
+
+    width: 100px;
+
+    height: 55px;
+
+    font-size: 25px;
+
+    touch-action: manipulation;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🟥 Dodge</h1>
+
+<div id="score">
+    Score: 0
+</div>
+
+<div id="game">
+
+    <div id="player"></div>
+
+    <div id="gameOver">
+
+        <h2>Game Over!</h2>
+
+        <p id="finalScore"></p>
+
+        <button onclick="restartGame()">
+            Play Again
+        </button>
+
+    </div>
+
+</div>
+
+<div class="controls">
+
+    <button
+        class="control"
+        onmousedown="moveLeft = true"
+        onmouseup="moveLeft = false"
+        ontouchstart="moveLeft = true"
+        ontouchend="moveLeft = false">
+
+        ←
+
+    </button>
+
+    <button
+        class="control"
+        onmousedown="moveRight = true"
+        onmouseup="moveRight = false"
+        ontouchstart="moveRight = true"
+        ontouchend="moveRight = false">
+
+        →
+
+    </button>
+
+</div>
+
+
+<script>
+
+const game =
+    document.getElementById("game");
+
+const player =
+    document.getElementById("player");
+
+const scoreText =
+    document.getElementById("score");
+
+const gameOverScreen =
+    document.getElementById("gameOver");
+
+const finalScore =
+    document.getElementById("finalScore");
+
+
+let playerX = 50;
+
+let moveLeft = false;
+
+let moveRight = false;
+
+let score = 0;
+
+let gameRunning = true;
+
+let enemies = [];
+
+let spawnTimer = 0;
+
+let lastTime = 0;
+
+
+/* =========================
+   KEYBOARD
+========================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "ArrowLeft") {
+
+            moveLeft = true;
+
+        }
+
+        if (event.key === "ArrowRight") {
+
+            moveRight = true;
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keyup",
+    function(event) {
+
+        if (event.key === "ArrowLeft") {
+
+            moveLeft = false;
+
+        }
+
+        if (event.key === "ArrowRight") {
+
+            moveRight = false;
+
+        }
+
+    }
+);
+
+
+/* =========================
+   CREATE ENEMY
+========================= */
+
+function createEnemy() {
+
+    const enemy =
+        document.createElement("div");
+
+    enemy.className = "enemy";
+
+    enemy.style.left =
+        Math.random() * 90 + "%";
+
+    enemy.style.top = "-50px";
+
+    game.appendChild(enemy);
+
+    enemies.push({
+
+        element: enemy,
+
+        y: -50,
+
+        speed:
+            180 + Math.random() * 120
+
+    });
+
+}
+
+
+/* =========================
+   COLLISION
+========================= */
+
+function collision(a, b) {
+
+    const rect1 =
+        a.getBoundingClientRect();
+
+    const rect2 =
+        b.getBoundingClientRect();
+
+    return !(
+        rect1.right < rect2.left ||
+        rect1.left > rect2.right ||
+        rect1.bottom < rect2.top ||
+        rect1.top > rect2.bottom
+    );
+
+}
+
+
+/* =========================
+   GAME LOOP
+========================= */
+
+function gameLoop(time) {
+
+    if (!gameRunning) {
+
+        return;
+
+    }
+
+    const delta =
+        (time - lastTime) / 1000;
+
+    lastTime = time;
+
+
+    /* PLAYER */
+
+    if (moveLeft) {
+
+        playerX -= 35 * delta;
+
+    }
+
+    if (moveRight) {
+
+        playerX += 35 * delta;
+
+    }
+
+
+    playerX =
+        Math.max(
+            0,
+            Math.min(
+                92,
+                playerX
+            )
+        );
+
+
+    player.style.left =
+        playerX + "%";
+
+
+    /* ENEMY SPAWNING */
+
+    spawnTimer += delta;
+
+    if (spawnTimer > 0.65) {
+
+        createEnemy();
+
+        spawnTimer = 0;
+
+    }
+
+
+    /* ENEMIES */
+
+    enemies.forEach(
+        function(enemy) {
+
+            enemy.y +=
+                enemy.speed * delta;
+
+            enemy.element.style.top =
+                enemy.y + "px";
+
+
+            if (
+                collision(
+                    player,
+                    enemy.element
+                )
+            ) {
+
+                endGame();
+
+            }
+
+        }
+    );
+
+
+    /* REMOVE OLD ENEMIES */
+
+    enemies =
+        enemies.filter(
+            function(enemy) {
+
+                if (
+                    enemy.y >
+                    game.clientHeight
+                ) {
+
+                    enemy.element.remove();
+
+                    score += 1;
+
+                    scoreText.textContent =
+                        "Score: " + score;
+
+                    return false;
+
+                }
+
+                return true;
+
+            }
+        );
+
+
+    requestAnimationFrame(gameLoop);
+
+}
+
+
+/* =========================
+   GAME OVER
+========================= */
+
+function endGame() {
+
+    gameRunning = false;
+
+    finalScore.textContent =
+        "Your score: " + score;
+
+    gameOverScreen.style.display =
+        "flex";
+
+}
+
+
+/* =========================
+   RESTART
+========================= */
+
+function restartGame() {
+
+    enemies.forEach(
+        function(enemy) {
+
+            enemy.element.remove();
+
+        }
+    );
+
+    enemies = [];
+
+    score = 0;
+
+    scoreText.textContent =
+        "Score: 0";
+
+    playerX = 50;
+
+    player.style.left =
+        "50%";
+
+    gameOverScreen.style.display =
+        "none";
+
+    gameRunning = true;
+
+    lastTime = performance.now();
+
+    requestAnimationFrame(gameLoop);
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+requestAnimationFrame(gameLoop);
+
+</script>
+
+</body>
+
+</html>
